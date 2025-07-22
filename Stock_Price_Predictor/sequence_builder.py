@@ -19,7 +19,8 @@ def create_sequences(data: pd.DataFrame, sequence_length: int = 60, target_col: 
     X, y = [], []
     for i in range(sequence_length, len(data)):
         X.append(data.iloc[i - sequence_length:i].values)
-        y.append(data.iloc[i][target_col])
+        #y.append(data.iloc[i][target_col])
+        y.append(data.iloc[i].values)
     return np.array(X), np.array(y)
 
 
@@ -44,7 +45,7 @@ def train_test_split_time_series(X, y, train_ratio=0.8):
 
 # sequence_builder.py (append this)
 
-def inverse_scale(scaler, y_scaled, column_index=3):
+def inverse_scale(scaler, y_scaled):
     """
     Inverse scales a 1D array of predictions using the original scaler.
     
@@ -56,8 +57,13 @@ def inverse_scale(scaler, y_scaled, column_index=3):
     Returns:
         Unscaled values in original price range.
     """
-    dummy = np.zeros((len(y_scaled), scaler.n_features_in_))
-    dummy[:, column_index] = y_scaled
+    #dummy = np.zeros((len(y_scaled), scaler.n_features_in_))
+    #dummy[:, column_index] = y_scaled
+    #inv = scaler.inverse_transform(dummy)
+    #return inv[:, column_index]
+
+    dummy = np.zeros((y_scaled.shape[0], scaler.n_features_in_))
+    dummy[:, :y_scaled.shape[1]] = y_scaled
     inv = scaler.inverse_transform(dummy)
-    return inv[:, column_index]
+    return inv[:, :y_scaled.shape[1]]
 

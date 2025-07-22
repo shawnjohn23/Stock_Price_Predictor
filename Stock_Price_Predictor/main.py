@@ -1,13 +1,19 @@
 # main.py
 
+from stock_data_loader import download_stock_data
 from stock_data_loader import load_data
 from sequence_builder import scale_data, create_sequences
+
+# Download data 
+#download_stock_data('AAPL')
 
 # Load data
 df = load_data('AAPL')
 
+
 # Scale it
 scaled_df, scaler = scale_data(df)
+
 
 # Create sequences
 X, y = create_sequences(scaled_df, sequence_length=60)
@@ -31,9 +37,11 @@ from model import build_lstm_gru_model
 
 model = build_lstm_gru_model(X_train.shape[1:])
 
+
+
 history = model.fit(
     X_train, y_train,
-    epochs=20,
+    epochs=10,
     batch_size=32,
     validation_data=(X_test, y_test)
 )
@@ -47,15 +55,12 @@ print("✅ Model saved to trained_model.h5")
 
 import matplotlib.pyplot as plt
 from sequence_builder import inverse_scale
-
 # Predict
 y_pred_scaled = model.predict(X_test).flatten()
 
 # Inverse scale
 y_pred = inverse_scale(scaler, y_pred_scaled, column_index=3)
 y_true = inverse_scale(scaler, y_test, column_index=3)
-
-
 # main.py (improved plotting)
 
 # Re-load full scaled data (for plotting full price history)

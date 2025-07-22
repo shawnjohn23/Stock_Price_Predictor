@@ -11,7 +11,9 @@ def build_lstm_gru_model(input_shape):
     model.add(Dropout(0.2))
     
     model.add(Dense(32, activation='relu'))
-    model.add(Dense(1))  # output layer for regression (predicting next close price)
+    #model.add(Dense(1))  # output layer for regression (predicting next close price)
+    model.add(Dense(5))  # OHLCV: open, high, low, close, volume
+    model.compile(optimizer='adam', loss='mse')
 
     model.compile(optimizer='adam', loss='mean_squared_error')
     return model
